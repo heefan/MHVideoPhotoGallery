@@ -3,7 +3,7 @@
 //  MHVideoPhotoGallery
 //
 //  Created by Mario Hahn on 19.09.13.
-//  Copyright (c) 2013 Mario Hahn. All rights reserved.
+//  Copyright (c) 2013 Mario Hahn. Al.l rights reserved.
 //
 
 #import "AppDelegate.h"
@@ -22,6 +22,8 @@
         return nil;
     });
     
+    //这里是定义
+    // how to call this block?
     MHGalleryCustomImageBlock(^UIImage *(NSString *imageToChangeName) {
         return nil;
     });

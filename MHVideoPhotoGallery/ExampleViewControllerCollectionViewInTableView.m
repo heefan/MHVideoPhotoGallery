@@ -48,7 +48,6 @@
 {
     [super viewDidLoad];
     
-    
     self.title = @"CollectionView";
     
     MHGalleryItem *localVideo = [MHGalleryItem.alloc initWithURL:[[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Sydney-iPhone" ofType:@"m4v"]] absoluteString]
@@ -213,17 +212,34 @@
     return cell;
 }
 
+/* 
+ [重要] 这个collection view 可以显示Picture/Gif Video这里显示的应该是thumbnial
+ 
+ 1. 那么这个是怎么play gif的？
+ 参看这里：http://stackoverflow.com/questions/4386675/add-animated-gif-image-in-iphone-uiimageview
+ 参考代码：UIImage+animatedGIF
+ */
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     UICollectionViewCell *cell =nil;
     NSString *cellIdentifier = @"MHMediaPreviewCollectionViewCell";
     cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    /*
+     这里有个技巧，因为tableview有很多cell，每个cell都有一个collectionView，所以这里需要使用collectionView定位，
+     相当于行序号
+     */
     NSIndexPath *indexPathNew = [NSIndexPath indexPathForRow:indexPath.row inSection:collectionView.tag];
+    
+    /*
+     这里对cell进行操作，获取reuseable的cell
+     */
     [self makeOverViewDetailCell:(MHMediaPreviewCollectionViewCell*)cell atIndexPath:indexPathNew];
     
     return cell;
 }
 
-
+/*
+ 点击cell后，会navigate到播放这个media的页面
+ */
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     UIImageView *imageView = [(MHMediaPreviewCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath] thumbnail];
@@ -237,6 +253,8 @@
     
     //  gallery.galleryDelegate = self;
     //  gallery.dataSource = self;
+    
+    //表明这个MHGalleryController* 是一个weak指针，不持有该对象，当gallery内容改变时，blockGallery就被销毁，并为nil
     __weak MHGalleryController *blockGallery = gallery;
     
     gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
@@ -292,7 +310,7 @@
     return YES;
 }
 
--(void)makeOverViewDetailCell:(MHMediaPreviewCollectionViewCell*)cell atIndexPath:(NSIndexPath*)indexPath{
+-(void)makeOverViewDetailCell:(MHMediaPreviewCollectionViewCell*)cell atIndexPath:(NSIndexPath*)indexPath {
     MHGalleryItem *item = self.galleryDataSource[indexPath.section][indexPath.row];
     cell.thumbnail.contentMode = UIViewContentModeScaleAspectFill;
     
